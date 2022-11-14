@@ -12,7 +12,7 @@ public class Application {
     private GUI gui;
 
     public Application() {
-        final String fname = "data.ser";
+        fname = "data.ser";
         setData();
         gui = new GUI(this);
     }

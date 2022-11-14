@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import static javax.swing.GroupLayout.Alignment.CENTER;
 
 public class GUI extends JFrame {
     private AbstractTableModel generalCompetitiveTableModel;
@@ -219,6 +220,11 @@ public class GUI extends JFrame {
 
         // MAIN WINDOW
 
+        GroupLayout mainLayout = new GroupLayout (mainPanel);
+        mainPanel.setLayout (mainLayout);
+        mainLayout.setAutoCreateGaps (true);
+        mainLayout.setAutoCreateContainerGaps (true);
+
         // Competitive button
         button11 = new JButton("New competitive debate");
         button11.addActionListener((ActionEvent e) ->
@@ -228,7 +234,6 @@ public class GUI extends JFrame {
             motion = null;
             names1 = new String[4];
         });
-        mainPanel.add(button11);
 
         // Practice button
         button12 = new JButton("New practice debate");
@@ -240,7 +245,6 @@ public class GUI extends JFrame {
             names1 = new String[4];
             names2 = new String[4];
         });
-        mainPanel.add(button12);
 
         // History button
         button13 = new JButton("History");
@@ -248,25 +252,25 @@ public class GUI extends JFrame {
         {
             cardLayout.show(getContentPane(), HISTORY_PANEL_NAME);
         });
-        mainPanel.add(button13);
 
         // Main layout
-        GroupLayout mainLayout = new GroupLayout (mainPanel);
-        mainPanel.setLayout (mainLayout);
-        mainLayout.setAutoCreateGaps (true);
-        mainLayout.setAutoCreateContainerGaps (true);
         mainLayout.setHorizontalGroup(
                 mainLayout.createSequentialGroup()
                         .addComponent(button11)
                         .addComponent(button12)
                         .addComponent(button13));
         mainLayout.setVerticalGroup(
-                mainLayout.createParallelGroup()
+                mainLayout.createParallelGroup(CENTER)
                         .addComponent(button11)
                         .addComponent(button12)
                         .addComponent(button13));
 
         // HISTORY WINDOW
+
+        GroupLayout historyLayout = new GroupLayout (historyPanel);
+        historyPanel.setLayout (historyLayout);
+        historyLayout.setAutoCreateGaps (true);
+        historyLayout.setAutoCreateContainerGaps (true);
 
         // History back button
 
@@ -275,7 +279,6 @@ public class GUI extends JFrame {
         {
             cardLayout.show(getContentPane(), MAIN_PANEL_NAME);
         });
-        historyPanel.add(button21);
 
         // General button
         button22 = new JButton("General information");
@@ -287,7 +290,6 @@ public class GUI extends JFrame {
             updateGeneralCompetitiveTable();
             updateGeneralPracticeTable();
         });
-        historyPanel.add(button22);
 
         // Debate button
         button23 = new JButton("Browse debates");
@@ -297,7 +299,6 @@ public class GUI extends JFrame {
             updateCompetitiveDebateTable();
             updatePracticeDebateTable();
         });
-        historyPanel.add(button23);
 
         // Debater button
         button24 = new JButton("Debater statistics");
@@ -306,13 +307,8 @@ public class GUI extends JFrame {
             cardLayout.show(getContentPane(), DEBATER_PANEL_NAME);
             updateDebaterTable();
         });
-        historyPanel.add(button24);
 
         // History layout
-        GroupLayout historyLayout = new GroupLayout (historyPanel);
-        historyPanel.setLayout (historyLayout);
-        historyLayout.setAutoCreateGaps (true);
-        historyLayout.setAutoCreateContainerGaps (true);
         historyLayout.setHorizontalGroup(
                 historyLayout.createSequentialGroup()
                         .addComponent(button21)
@@ -387,7 +383,7 @@ public class GUI extends JFrame {
         generalPracticeTable = new JTable (generalPracticeTableModel);
         generalPanel.add(generalPracticeTable);
 
-        // Debate layout
+        // General layout
         GroupLayout generalLayout = new GroupLayout (generalPanel);
         generalPanel.setLayout (generalLayout);
         generalLayout.setAutoCreateGaps (true);
