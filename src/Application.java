@@ -9,6 +9,7 @@ public class Application {
     private ArrayList<Practice> practices;
     private ArrayList<Competitive> competitives;
     private ArrayList<Debater> debaters;
+    private String[] officialMotionTypes = {"would", "supports", "believes", "regrets", "prefers", "opposes"};
     private String fname;
     private GUI gui;
     private Boolean exception;
@@ -273,5 +274,19 @@ public class Application {
             output[i] = output[i]/practices.size();
         }
         return output;
+    }
+
+    public String[] getOfficialMotionTypes(){
+        return officialMotionTypes;
+    }
+
+    public String printOfficialMotionTypes(){
+        String s = "";
+        int length = officialMotionTypes.length;
+        for (int i = 0; i < length-1; i++) {
+            s += (officialMotionTypes[i]+", ");
+        }
+        s += ("or " + officialMotionTypes[length-1]);
+        return s;
     }
 }

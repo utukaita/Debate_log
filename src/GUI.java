@@ -1,7 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -1171,10 +1169,12 @@ public class GUI extends JFrame {
         {
             closeFrames();
             String message = addNewCompetitiveDebate();
-            f4 = new JFrame("Alert");
-            f4.add(new JLabel(message));
-            f4.setSize(300, 300);
-            f4.setVisible(true);
+            if(message!="") {
+                f4 = new JFrame("Alert");
+                f4.add(new JLabel(message));
+                f4.setSize(300, 300);
+                f4.setVisible(true);
+            }
         });
 
         // Competitive panel layout
@@ -1391,10 +1391,12 @@ public class GUI extends JFrame {
         {
             closeFrames();
             String message = addNewPracticeDebate();
-            f5 = new JFrame("Alert");
-            f5.add(new JLabel(message));
-            f5.setSize(300, 300);
-            f5.setVisible(true);
+            if(message!="") {
+                f5 = new JFrame("Alert");
+                f5.add(new JLabel(message));
+                f5.setSize(300, 300);
+                f5.setVisible(true);
+            }
         });
 
         // Practice panel layout
@@ -1534,6 +1536,18 @@ public class GUI extends JFrame {
         return true;
     }
 
+    boolean checkMotionType(String type){
+        for (int i = 0; i < application.getOfficialMotionTypes().length; i++) {
+            if(type.equals(application.getOfficialMotionTypes()[i]))
+                return false;
+        }
+        int result = JOptionPane.showConfirmDialog (this,
+                "Are you sure you want to use a non-official motion type?", null, JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.YES_OPTION)
+            return false;
+        return true;
+    }
+
     public void updateGeneralCompetitiveTable(){
         generalCompetitiveTableModel.fireTableRowsInserted(0, application.getCompetitiveMotionTypes().length);
         generalCompetitiveTableModel.fireTableDataChanged();
@@ -1602,7 +1616,7 @@ public class GUI extends JFrame {
     }
 
     public void clearCompetitiveText(){
-        textField1.setText("");
+        textField1.setText("This house");
         textField2.setText("");
         textField4.setText(date);
         sykPropCheckBox.setSelected(false);
@@ -1616,7 +1630,7 @@ public class GUI extends JFrame {
     }
 
     public void clearPracticeText(){
-        textField3.setText("");
+        textField3.setText("This house");
         textField5.setText(date);
         propCheckBox2.setSelected(false);
         oppCheckBox2.setSelected(false);
@@ -1634,6 +1648,7 @@ public class GUI extends JFrame {
         String[] words = motion.split(" ");
         if (words.length < 3) return "Motion too short.";
         if (!words[0].equals("This") || !words[1].equals("house")) return "Motion must begin by 'This house'.";
+        if(checkMotionType(words[2])) return "";
         if (date.equals("")) return "Date missing.";
         if (!correctDate()) return "Date must be of the form day/month/year";
         if (enemy.equals("")) return "Enemy team missing.";
@@ -1654,6 +1669,7 @@ public class GUI extends JFrame {
         // Check if the input meets the requirements
         if (words.length < 3) return "Motion too short.";
         if (!words[0].equals("This") || !words[1].equals("house")) return "Every motion must begin by 'This house'.";
+        if(checkMotionType(words[2])) return "";
         if (date.equals("")) return "Date missing.";
         // Implementing the more complex correctDate() method
         if (!correctDate()) return "Date must be of the form 'day/month/year'.";
