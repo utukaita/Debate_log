@@ -1,10 +1,9 @@
-import java.util.Date;
 
 public class Competitive extends Debate{
     private boolean sykProp;
     private String enemy;
 
-    public Competitive(Date date) {
+    public Competitive(int[] date) {
         super(date);
     }
 

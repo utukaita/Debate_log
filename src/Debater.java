@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Debater {
+public class Debater implements java.io.Serializable {
     private String name;
     private ArrayList<Practice> practices;
     private ArrayList<Competitive> competitives;
@@ -12,13 +12,14 @@ public class Debater {
     }
 
     public double winRate(){
-        return (practiceWinRate()*Double.valueOf(practices.size()) + competitiveWinRate()*Double.valueOf(competitives.size()))
+        if (getDebates()==0) return -1;
+        else return (practiceWinRate()*Double.valueOf(practices.size()) + competitiveWinRate()*Double.valueOf(competitives.size()))
                 /Double.valueOf(practices.size()+competitives.size());
     }
 
-
     public double winRate(int role){
-        return (practiceWinRate(role)*Double.valueOf(totalPracticeDebates(role)) + competitiveWinRate(role)*Double.valueOf(totalCompetitiveDebates(role)))
+        if(totalDebates(role)==0) return 0;
+        else return (practiceWinRate(role)*Double.valueOf(totalPracticeDebates(role)) + competitiveWinRate(role)*Double.valueOf(totalCompetitiveDebates(role)))
                 /Double.valueOf(totalPracticeDebates(role)+totalCompetitiveDebates(role));
     }
 
@@ -50,26 +51,38 @@ public class Debater {
             return Double.valueOf(wins)/Double.valueOf(practices.size());
     }
 
+    // The following method finds the win rate of the debater in a certain role in practice debates
     public double practiceWinRate(int role){
+        // Initiating the win count to 0
         int wins = 0;
-        int total = 0;
+        // Looping through every practice debate the debater has been in
         for (int i = 0; i < practices.size(); i++) {
             Practice p = practices.get(i);
+            // Testing whether the debater was on team1 (proposition)
             if(p.getTeam1()[role].equals(this)){
-                total++;
+                // Testing whether proposition won
                 if(p.getPropWins())
+                    // Thus increasing the win count by 1
                     wins++;
             }
+            // Testing whether the debater was on team2 (opposition)
             else if(p.getTeam2()[role].equals(this)){
-                total++;
+                // Testing whether opposition won
                 if(!p.getPropWins())
+                    // Thus increasing the win count by 1
                     wins++;
             }
         }
-        if(total==0)
+        // Returning 0 if the denominator is 0
+        if(totalPracticeDebates(role)==0)
             return 0;
+        // Otherwise returning the ratio of win count and total debates
         else
-            return Double.valueOf(wins)/Double.valueOf(total);
+            return Double.valueOf(wins)/Double.valueOf(totalPracticeDebates(role));
+    }
+
+    public int totalPracticeDebates(){
+        return practices.size();
     }
 
     public int totalPracticeDebates(int role){
@@ -92,7 +105,7 @@ public class Debater {
             int j = 0;
             while (j<4 && added == false) {
                 if (c.getTeam1()[j].equals(this)) {
-                    if (c.getPropWins()) {
+                    if (c.getPropWins()==c.getSykProp()) {
                         wins++;
                         added = true;
                     }
@@ -108,19 +121,21 @@ public class Debater {
 
     public double competitiveWinRate(int role){
         int wins = 0;
-        int total = 0;
         for (int i = 0; i < competitives.size(); i++) {
             Competitive c = competitives.get(i);
             if(c.getTeam1()[role].equals(this)) {
-                total++;
                 if (c.getPropWins() == c.getSykProp())
                     wins++;
             }
         }
-        if(total==0)
+        if(totalCompetitiveDebates(role)==0)
             return 0;
         else
-            return Double.valueOf(wins)/Double.valueOf(total);
+            return Double.valueOf(wins)/Double.valueOf(totalCompetitiveDebates(role));
+    }
+
+    public int totalCompetitiveDebates(){
+        return competitives.size();
     }
 
     public int totalCompetitiveDebates(int role){
@@ -135,6 +150,10 @@ public class Debater {
 
     public int getDebates(){
         return practices.size() + competitives.size();
+    }
+
+    public int totalDebates(int role){
+        return totalPracticeDebates(role) + totalCompetitiveDebates(role);
     }
 
     public String getName() {

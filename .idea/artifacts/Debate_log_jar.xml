@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Debate_log:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Debate_log_jar</output-path>
+    <root id="archive" name="Debate_log.jar">
+      <element id="module-output" name="Debate_log" />
+    </root>
+  </artifact>
+</component>

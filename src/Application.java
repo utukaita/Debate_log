@@ -2,7 +2,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Application {
     private ArrayList<Practice> practices;
@@ -10,6 +11,7 @@ public class Application {
     private ArrayList<Debater> debaters;
     private String fname;
     private GUI gui;
+    private Boolean exception;
 
     public Application() {
         fname = "data.ser";
@@ -32,37 +34,43 @@ public class Application {
 
     public void setData() {
         File file = new File(fname);
-        if (file.exists() && !file.isDirectory()) {
+        exception = false;
+        if (file.exists() && !file.isDirectory() ) {
             try (ObjectInputStream in =
                          new ObjectInputStream(new FileInputStream(fname))) {
                 practices = (ArrayList<Practice>) in.readObject();
                 competitives = (ArrayList<Competitive>) in.readObject();
                 debaters = (ArrayList<Debater>) in.readObject();
-                System.out.println("hophup");
             } catch (Exception e) {
                 System.out.println(e);
+                exception = true;
             }
         } else {
+            exception = true;
+        }
+        if(exception){
             practices = new ArrayList<>();
             competitives = new ArrayList<>();
             debaters = new ArrayList<>();
-            System.out.println("hophap");
         }
     }
-    public void addPractice(String motion, boolean propWins, String[] propNames, String[] oppNames) {
-        Date date = new Date();
+
+    public void addPractice(String motion, int[] date, boolean propWins, String[] propNames, String[] oppNames) {
         Practice practice = new Practice(date);
         practice.setMotion(motion);
         practice.setMotionType(motion);
         practice.setPropWins(propWins);
         addPracticeDebaters(practice, true, propNames);
         addPracticeDebaters(practice, false, oppNames);
+        for (int i = 0; i < practices.size(); i++) {
+            if(isNewer(practice, practices.get(i))){
+                practices.add(i,practice);
+                return;}
+        }
         practices.add(practice);
-        System.out.println(practice);
     }
 
-    public void addCompetitive(String motion, String enemy, boolean sykProp, boolean propWins, String[] names) {
-        Date date = new Date();
+    public void addCompetitive(String motion, int[] date, String enemy, boolean sykProp, boolean propWins, String[] names) {
         Competitive competitive = new Competitive(date);
         competitive.setMotion(motion);
         competitive.setMotionType(motion);
@@ -70,8 +78,12 @@ public class Application {
         competitive.setSykProp(sykProp);
         competitive.setPropWins(propWins);
         addCompetitiveDebaters(competitive, names);
+        for (int i = 0; i < competitives.size(); i++) {
+            if(isNewer(competitive, competitives.get(i))){
+                competitives.add(i,competitive);
+                return;}
+        }
         competitives.add(competitive);
-        System.out.println(competitive);
     }
 
     public void deletePractice(int n){
@@ -157,7 +169,26 @@ public class Application {
         debaters.remove(n);
     }
 
+    public boolean isNewer(Debate debate1, Debate debate2){
+        int[] parts1 = debate1.getDate();
+        int[] parts2 = debate2.getDate();
+        for (int i = 2; i >= 0; i--) {
+            if(parts1[i]!=parts2[i]){
+                if(parts1[i]>parts2[i])
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return true;
 
+    }
+
+    public void sortDebaters(){
+        Comparator<Debater> comparator = (d1, d2) -> Double.compare(d1.winRate(), d2.winRate());
+        Collections.sort(debaters, comparator);
+        Collections.reverse(debaters);
+    }
 
     public double practiceWinningSide(){
         double prop = 0;
@@ -165,7 +196,7 @@ public class Application {
             if (practices.get(i).getPropWins() == true) prop++;
         }
         if (practices.size()==0)
-            return -1;
+            return 0;
         else return prop/practices.size();
     }
 
@@ -175,7 +206,7 @@ public class Application {
             if(competitives.get(i).getSykProp()==competitives.get(i).getPropWins()) syk++;
         }
         if (competitives.size()==0)
-            return -1;
+            return 0;
         else
             return syk/competitives.size();
     }
@@ -201,7 +232,8 @@ public class Application {
 
     public String[] getPracticeMotionTypes(){
         ArrayList<String> types = new ArrayList<>();
-        for (int i = 0; i < practices.size(); i++) {
+        for (int i = 0;
+             i < practices.size(); i++) {
             boolean newType = true;
             for (int j = 0; j < types.size(); j++) {
                 if(practices.get(i).getMotionType().equals(types.get(j)))
@@ -241,13 +273,5 @@ public class Application {
             output[i] = output[i]/practices.size();
         }
         return output;
-    }
-
-    public GUI getGui() {
-        return gui;
-    }
-
-    public void setGui(GUI gui) {
-        this.gui = gui;
     }
 }

@@ -1,19 +1,20 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
-public class Debate {
-    private Date date;
+public class Debate implements java.io.Serializable {
+    private int[] date;
     private String motion;
     private String motionType;
     private Boolean propWins;
     private Debater[] team1 = new Debater[4];
-    public Debate(Date date) {
+
+    public Debate(int[] date) {
         this.date = date;
     }
 
-    public String getDate(){
-        return String.valueOf(date.getDate())+"/"+String.valueOf(date.getMonth()+1)+"/"+String.valueOf(date.getYear()+1900);
+    public int[] getDate(){
+        return date;
+    }
+    public String getDateString(){
+        return date[0]+"/"+date[1]+"/"+date[2];
     }
 
     public String getMotion() {

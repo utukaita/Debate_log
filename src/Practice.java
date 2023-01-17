@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 public class Practice extends Debate{
     private Debater[] team2 = new Debater[4];
-    public Practice(Date date) {
+
+    public Practice(int[] date) {
         super(date);
-        this.team2 = team2;
     }
 
     public Debater[] getTeam2() {
