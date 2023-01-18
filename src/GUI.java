@@ -217,7 +217,7 @@ public class GUI extends JFrame {
     private int[] dateList = new int[3];
 
     public GUI(Application application) {
-        super("Debate Log");
+        super("Debater Pro");
         this.application = application;
 
         // Frame
