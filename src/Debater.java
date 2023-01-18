@@ -12,7 +12,7 @@ public class Debater implements java.io.Serializable {
     }
 
     public double winRate(){
-        if (getDebates()==0) return -1;
+        if (getDebates()==0) return 0;
         else return (practiceWinRate()*Double.valueOf(practices.size()) + competitiveWinRate()*Double.valueOf(competitives.size()))
                 /Double.valueOf(practices.size()+competitives.size());
     }

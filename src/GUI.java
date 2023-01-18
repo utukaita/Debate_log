@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -55,6 +54,8 @@ public class GUI extends JFrame {
 
 
     //Labels
+    //Main
+    private JLabel l1;
     //General
     private JLabel sykRate;
     private JLabel propRate;
@@ -108,7 +109,6 @@ public class GUI extends JFrame {
     private JLabel l513;
 
     private Application application;
-    private JMenuBar menuBar;
     // Buttons
     // Main
     private JButton button11;
@@ -195,12 +195,13 @@ public class GUI extends JFrame {
     private JTextField textField28;
 
     // Style
+
+    // Color
+    Color popUpColor = new java.awt.Color(191, 229, 181);
+    Color color = new java.awt.Color(181, 205, 227);
+
     // Font
     Font  BOLD  = new Font(Font.DIALOG,  Font.BOLD, 15);
-
-    //Border
-
-    Border BLACK_BORDER = BorderFactory.createLineBorder(Color.BLACK);
 
     // Variables
     private String motion;
@@ -223,7 +224,6 @@ public class GUI extends JFrame {
         setSize(800, 600);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         CardLayout cardLayout = new CardLayout();
         setLayout(cardLayout);
 
@@ -256,6 +256,11 @@ public class GUI extends JFrame {
         add(debaterPanel, DEBATER_PANEL_NAME);
 
         // MAIN WINDOW
+
+        // Main text
+
+        l1 = new JLabel("Debater Pro");
+        l1.setFont(BOLD);
 
         // Competitive button
         button11 = new JButton("New competitive debate");
@@ -292,6 +297,8 @@ public class GUI extends JFrame {
 
         // Main layout
         mainLayout = new GroupLayout(mainPanel);
+        mainPanel.setBackground(color);
+
         mainPanel.setLayout (mainLayout);
         mainLayout.setAutoCreateGaps (true);
         mainLayout.setAutoCreateContainerGaps (true);
@@ -299,6 +306,7 @@ public class GUI extends JFrame {
                 mainLayout.createSequentialGroup()
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(mainLayout.createParallelGroup(CENTER)
+                                .addComponent(l1)
                                 .addComponent(button11)
                                 .addComponent(button12)
                                 .addComponent(button13))
@@ -307,9 +315,13 @@ public class GUI extends JFrame {
         mainLayout.setVerticalGroup(
                 mainLayout.createSequentialGroup()
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(l1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(button11)
                         .addComponent(button12)
                         .addComponent(button13)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(l1)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -332,7 +344,7 @@ public class GUI extends JFrame {
         {
             cardLayout.show(getContentPane(), GENERAL_PANEL_NAME);
             sykRate.setText("Competitive Syk win rate: " + String.format("%.2g%n", application.sykWinRate()));
-            propRate.setText("Practice prop win rate:      " + String.format("%.2g%n", application.practiceWinningSide()));
+            propRate.setText("Practice prop win rate: " + String.format("%.2g%n", application.practiceWinningSide()));
             updateGeneralCompetitiveTable();
             updateGeneralPracticeTable();
         });
@@ -357,6 +369,8 @@ public class GUI extends JFrame {
 
         // History layout
         historyLayout = new GroupLayout (historyPanel);
+        historyPanel.setBackground(color);
+
         historyPanel.setLayout (historyLayout);
         historyLayout.setAutoCreateGaps (true);
         historyLayout.setAutoCreateContainerGaps (true);
@@ -392,15 +406,13 @@ public class GUI extends JFrame {
         // Competitive syk rate text
         sykRate = new JLabel();
         sykRate.setFont(BOLD);
-        sykRate.setBorder(BLACK_BORDER);
 
         // Practice prop rate text
         propRate = new JLabel();
         propRate.setFont(BOLD);
-        propRate.setBorder(BLACK_BORDER);
 
         // Competitive type syk rate text
-        l101 = new JLabel("Syk win rate by motion type:      ");
+        l101 = new JLabel("Syk win rate by motion type      ");
 
         // Competitive type syk rate table
         // A table for win rates for each motion type in competitive debates
@@ -435,7 +447,7 @@ public class GUI extends JFrame {
         generalCompetitiveScrollPane = new JScrollPane(generalCompetitiveTable);
 
         // Practice type frequency text
-        l102 = new JLabel("Practice motion type frequency: ");
+        l102 = new JLabel("Practice motion type frequency ");
 
         // Practice type frequency table
         generalPracticeTableModel = new AbstractTableModel ()
@@ -464,6 +476,8 @@ public class GUI extends JFrame {
 
         // General layout
         generalLayout = new GroupLayout (generalPanel);
+        generalPanel.setBackground(color);
+
         generalPanel.setLayout (generalLayout);
         generalLayout.setAutoCreateGaps (true);
         generalLayout.setAutoCreateContainerGaps (true);
@@ -504,7 +518,8 @@ public class GUI extends JFrame {
         });
 
         // Competitive debate table text
-        l201 = new JLabel("Competitive: ");
+        l201 = new JLabel("Competitive ");
+        l201.setFont(BOLD);
 
         // Competitive debate table
         competitiveDebateTableModel = new AbstractTableModel ()
@@ -579,6 +594,7 @@ public class GUI extends JFrame {
                 // Layout
                 f1Layout = new GroupLayout (f1.getContentPane());
                 f1.getContentPane().setLayout (f1Layout);
+                f1.getContentPane().setBackground(popUpColor);
                 f1Layout.setAutoCreateGaps (true);
                 f1Layout.setAutoCreateContainerGaps (true);
                 f1Layout.setHorizontalGroup(
@@ -619,7 +635,8 @@ public class GUI extends JFrame {
         );
 
         // Practice debate table text
-        l202 = new JLabel("Practice:       ");
+        l202 = new JLabel("Practice        ");
+        l202.setFont(BOLD);
 
         // Practice debate table
         practiceDebateTableModel = new AbstractTableModel ()
@@ -663,7 +680,8 @@ public class GUI extends JFrame {
                 f2.setLayout(new FlowLayout());
 
                 // Proposition text
-                l21 = new JLabel("Proposition: ");
+                l21 = new JLabel("Proposition ");
+                l21.setFont(BOLD);
 
                 // Proposition table
                 tableModel21 = new AbstractTableModel ()
@@ -682,7 +700,8 @@ public class GUI extends JFrame {
                 table21 = new JTable (tableModel21);
 
                 // Opposition text
-                l22 = new JLabel("Opposition: ");
+                l22 = new JLabel("Opposition ");
+                l22.setFont(BOLD);
 
                 // Opposition table
                 tableModel22 = new AbstractTableModel ()
@@ -709,6 +728,7 @@ public class GUI extends JFrame {
                 // Layout
                 f2Layout = new GroupLayout (f2.getContentPane());
                 f2.getContentPane().setLayout (f2Layout);
+                f2.getContentPane().setBackground(popUpColor);
                 f2Layout.setAutoCreateGaps (true);
                 f2Layout.setAutoCreateContainerGaps (true);
                 f2Layout.setHorizontalGroup(
@@ -758,6 +778,8 @@ public class GUI extends JFrame {
 
         // Debate panel layout
         debateLayout = new GroupLayout (debatePanel);
+        debatePanel.setBackground(color);
+
         debatePanel.setLayout (debateLayout);
         debateLayout.setAutoCreateGaps (true);
         debateLayout.setAutoCreateContainerGaps (true);
@@ -930,6 +952,7 @@ public class GUI extends JFrame {
 
                 f3Layout = new GroupLayout (f3.getContentPane());
                 f3.getContentPane().setLayout (f3Layout);
+                f3.getContentPane().setBackground(popUpColor);
                 f3Layout.setAutoCreateGaps (true);
                 f3Layout.setAutoCreateContainerGaps (true);
                 f3Layout.setHorizontalGroup(
@@ -988,7 +1011,9 @@ public class GUI extends JFrame {
                         else {
                             f = new JFrame("Alert");
                             f.add(new JLabel("Cannot delete an active debater."));
-                            f.setSize(300, 300);
+                            f.setSize(300, 200);
+                            f.getContentPane().setBackground(popUpColor);
+                            f.setLayout(new FlowLayout());
                             f.setVisible(true);
                         }
                     }
@@ -997,6 +1022,8 @@ public class GUI extends JFrame {
 
         // Debater panel layout
         debaterLayout = new GroupLayout (debaterPanel);
+        debaterPanel.setBackground(color);
+
         debaterPanel.setLayout (debaterLayout);
         debaterLayout.setAutoCreateGaps (true);
         debaterLayout.setAutoCreateContainerGaps (true);
@@ -1039,7 +1066,7 @@ public class GUI extends JFrame {
         l400 = new JLabel("Competitive");
         l400.setFont(BOLD);
         // Competitive motion text
-        l401 = new JLabel("Motion:    ");
+        l401 = new JLabel("Motion    ");
 
         // Text field
         textField1 = new JTextField(30);
@@ -1050,7 +1077,7 @@ public class GUI extends JFrame {
             }
         });
         // Competitive date text
-        l409 = new JLabel("Date:        ");
+        l409 = new JLabel("Date        ");
 
         // Competitive date text field
         textField4 = new JTextField();
@@ -1060,7 +1087,7 @@ public class GUI extends JFrame {
             }
         });
         // Competitive enemy text
-        l402 = new JLabel("Enemy:     ");
+        l402 = new JLabel("Enemy     ");
 
         // Text field
         textField2 = new JTextField(10);
@@ -1071,7 +1098,7 @@ public class GUI extends JFrame {
         });
 
         // Competitive syk text
-        l403 = new JLabel("Syk side:  ");
+        l403 = new JLabel("Syk side  ");
 
         // Competitive syk prop check box
         sykPropCheckBox = new JCheckBox("Proposition", false);
@@ -1102,7 +1129,7 @@ public class GUI extends JFrame {
                 });
 
         // Competitive winner text
-        l404 = new JLabel("Winner:    ");
+        l404 = new JLabel("Winner    ");
 
         // Competitive prop check box
         propCheckBox1 = new JCheckBox("Proposition", false);
@@ -1134,28 +1161,28 @@ public class GUI extends JFrame {
 
         // Competitive prop table
 
-        l405 = new JLabel("Speech 1: ");
+        l405 = new JLabel("Speech 1 ");
         textField11 = new JTextField(10);
         textField11.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField11.getText(), true, 1);
             }
         });
-        l406 = new JLabel("Speech 2: ");
+        l406 = new JLabel("Speech 2 ");
         textField12 = new JTextField(10);
         textField12.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField12.getText(), true, 2);
             }
         });
-        l407 = new JLabel("Speech 3: ");
+        l407 = new JLabel("Speech 3 ");
         textField13 = new JTextField(10);
         textField13.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField13.getText(), true, 3);
             }
         });
-        l408 = new JLabel("Speech 4: ");
+        l408 = new JLabel("Speech 4 ");
         textField14 = new JTextField(10);
         textField14.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
@@ -1172,13 +1199,17 @@ public class GUI extends JFrame {
             if(message!="") {
                 f4 = new JFrame("Alert");
                 f4.add(new JLabel(message));
-                f4.setSize(300, 300);
+                f4.setSize(300, 200);
+                f4.getContentPane().setBackground(popUpColor);
+                f4.setLayout(new FlowLayout());
                 f4.setVisible(true);
             }
         });
 
         // Competitive panel layout
         competitiveLayout = new GroupLayout (competitivePanel);
+        competitivePanel.setBackground(color);
+
         competitivePanel.setLayout (competitiveLayout);
         competitiveLayout.setAutoCreateGaps (true);
         competitiveLayout.setAutoCreateContainerGaps (true);
@@ -1269,7 +1300,7 @@ public class GUI extends JFrame {
         l500.setFont(BOLD);
 
         // Practice motion text
-        l501 = new JLabel("Motion:   ");
+        l501 = new JLabel("Motion   ");
 
         // Text field
         textField3 = new JTextField(30);
@@ -1280,7 +1311,7 @@ public class GUI extends JFrame {
         });
 
         // Practice date text
-        l513 = new JLabel("Date:       ");
+        l513 = new JLabel("Date       ");
 
         // Practice date text field
         textField5 = new JTextField();
@@ -1291,7 +1322,7 @@ public class GUI extends JFrame {
         });
 
         // Practice winner text
-        l502 = new JLabel("Winner:   ");
+        l502 = new JLabel("Winner   ");
 
         // Prop check box
         propCheckBox2 = new JCheckBox("Proposition", false);
@@ -1324,28 +1355,28 @@ public class GUI extends JFrame {
         // Practice prop table
 
         l511 = new JLabel("Team Proposition");
-        l503 = new JLabel("Speech 1: ");
+        l503 = new JLabel("Speech 1 ");
         textField21 = new JTextField(10);
         textField21.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField21.getText(), true, 1);
             }
         });
-        l504 = new JLabel("Speech 2: ");
+        l504 = new JLabel("Speech 2 ");
         textField22 = new JTextField(10);
         textField22.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField22.getText(), true, 2);
             }
         });
-        l505 = new JLabel("Speech 3: ");
+        l505 = new JLabel("Speech 3 ");
         textField23 = new JTextField(10);
         textField23.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField23.getText(), true, 3);
             }
         });
-        l506 = new JLabel("Speech 4: ");
+        l506 = new JLabel("Speech 4 ");
         textField24 = new JTextField(10);
         textField24.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
@@ -1356,28 +1387,28 @@ public class GUI extends JFrame {
         // Practice opp table
 
         l512 = new JLabel("Team Opposition");
-        l507 = new JLabel("Speech 1: ");
+        l507 = new JLabel("Speech 1 ");
         textField25 = new JTextField(10);
         textField25.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField25.getText(), false, 1);
             }
         });
-        l508 = new JLabel("Speech 2: ");
+        l508 = new JLabel("Speech 2 ");
         textField26 = new JTextField(10);
         textField26.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField26.getText(), false, 2);
             }
         });
-        l509 = new JLabel("Speech 3: ");
+        l509 = new JLabel("Speech 3 ");
         textField27 = new JTextField(10);
         textField27.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 updateSpeaker(textField27.getText(), false, 3);
             }
         });
-        l510 = new JLabel("Speech 4: ");
+        l510 = new JLabel("Speech 4 ");
         textField28 = new JTextField(10);
         textField28.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
@@ -1394,13 +1425,17 @@ public class GUI extends JFrame {
             if(message!="") {
                 f5 = new JFrame("Alert");
                 f5.add(new JLabel(message));
-                f5.setSize(300, 300);
+                f5.setSize(300, 200);
+                f5.getContentPane().setBackground(popUpColor);
+                f5.setLayout(new FlowLayout());
                 f5.setVisible(true);
             }
         });
 
         // Practice panel layout
         practiceLayout = new GroupLayout (practicePanel);
+        practicePanel.setBackground(color);
+
         practicePanel.setLayout (practiceLayout);
         practiceLayout.setAutoCreateGaps (true);
         practiceLayout.setAutoCreateContainerGaps (true);
@@ -1669,6 +1704,7 @@ public class GUI extends JFrame {
         // Check if the input meets the requirements
         if (words.length < 3) return "Motion too short.";
         if (!words[0].equals("This") || !words[1].equals("house")) return "Every motion must begin by 'This house'.";
+        // Warning the user if the motion is of a non-official type
         if(checkMotionType(words[2])) return "";
         if (date.equals("")) return "Date missing.";
         // Implementing the more complex correctDate() method

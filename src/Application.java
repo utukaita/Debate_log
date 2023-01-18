@@ -34,14 +34,20 @@ public class Application {
     }
 
     public void setData() {
+        // Creating the abstract File object with the proper name "data.ser"
         File file = new File(fname);
+        // Initialising the boolean variable exception
         exception = false;
+        // Testing if a file corresponding to the object exists
         if (file.exists() && !file.isDirectory() ) {
+            // Opening the serialization stream
             try (ObjectInputStream in =
                          new ObjectInputStream(new FileInputStream(fname))) {
+                // Reading the data which is in form of 3 lists
                 practices = (ArrayList<Practice>) in.readObject();
                 competitives = (ArrayList<Competitive>) in.readObject();
                 debaters = (ArrayList<Debater>) in.readObject();
+                // Catching possible errors
             } catch (Exception e) {
                 System.out.println(e);
                 exception = true;
@@ -49,6 +55,7 @@ public class Application {
         } else {
             exception = true;
         }
+        // In case of the file not existing or something going wrong, creating new empty lists
         if(exception){
             practices = new ArrayList<>();
             competitives = new ArrayList<>();
@@ -104,50 +111,54 @@ public class Application {
 
     public void addPracticeDebaters(Practice practice, boolean isTeam1, String[] names) {
         for (int i = 0; i < names.length; i++) {
-            boolean newDebater = true;
             Debater debater = new Debater(names[i]);
-            for (int j = 0; j < i; j++) {
-                if(isTeam1) {
-                    if (debater.getName().equals(practice.getTeam1()[j].getName()))
-                        newDebater = false;
-                }
-                else {
-                    if (debater.getName().equals(practice.getTeam2()[j].getName()))
-                        newDebater = false;
-                }
-            }
             int n = addDebater(debater);
             if (n == -1) {
                 if (isTeam1)
                     practice.addTeam1(debater, i);
                 else
                     practice.addTeam2(debater, i);
-                if(newDebater) debater.addPractice(practice);
+                debater.addPractice(practice);
             } else {
+                Debater d = debaters.get(n);
                 if (isTeam1)
-                    practice.addTeam1(debaters.get(n), i);
+                    practice.addTeam1(d, i);
                 else
-                    practice.addTeam2(debaters.get(n), i);
-                if(newDebater) debaters.get(n).addPractice(practice);
+                    practice.addTeam2(d, i);
+                if (d.getPractices().size()==0) d.addPractice(practice);
+                else if (!d.getPractices().get(d.getPractices().size() - 1).equals(practice)) d.addPractice(practice);
             }
         }
     }
 
+    // This method is called when a new competitive debate is added.
+    // It both adds debaters under the new debate and the new debate under the debaters
     public void addCompetitiveDebaters(Competitive competitive, String[] names) {
+        // The parameters are the new debate and the names of the debaters given by the user
+        // Looping through each name
         for (int i = 0; i < names.length; i++) {
-            boolean newDebater = true;
+            // Creating the object
             Debater debater = new Debater(names[i]);
-            for (int j = 0; j < i; j++) {
-                if (debater.getName().equals(competitive.getTeam1()[j].getName()))
-                    newDebater = false;
-            }
+            // Adding it to the list of debaters, if it does not already appear
+            // n is the index of the debater if it already appears in the list
+            // otherwise n is -1
             int n = addDebater(debater);
+            // n is the index of the debater if it already appears in the list
+            // otherwise n is -1
             if (n == -1) {
+                // adding the new debater to the debate
                 competitive.addTeam1(debater, i);
-                if(newDebater) debater.addCompetitive(competitive);
+                // adding the debate to the debater's list
+                debater.addCompetitive(competitive);
             } else {
-                competitive.addTeam1(debaters.get(n), i);
-                if(newDebater) debaters.get(n).addCompetitive(competitive);
+                Debater d = debaters.get(n);
+                // adding the already existing debater to the debate
+                competitive.addTeam1(d, i);
+                // adding the debate to the debater's list if it has not already been added
+                // first testing if there are any debates in the debater's list
+                if (d.getCompetitives().size()==0) d.addCompetitive(competitive);
+                // then if the last debate added is the debate in question (it must be last as only one debate is analyzed at a time)
+                else if (!d.getCompetitives().get(d.getCompetitives().size() - 1).equals(competitive)) d.addCompetitive(competitive);
             }
         }
     }
@@ -278,15 +289,5 @@ public class Application {
 
     public String[] getOfficialMotionTypes(){
         return officialMotionTypes;
-    }
-
-    public String printOfficialMotionTypes(){
-        String s = "";
-        int length = officialMotionTypes.length;
-        for (int i = 0; i < length-1; i++) {
-            s += (officialMotionTypes[i]+", ");
-        }
-        s += ("or " + officialMotionTypes[length-1]);
-        return s;
     }
 }
