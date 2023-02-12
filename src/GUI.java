@@ -137,6 +137,7 @@ public class GUI extends JFrame {
     // Practice
     private JButton button71;
     private JButton button72;
+    private JButton button73;
 
     // Frames
     private JFrame f;
@@ -213,8 +214,10 @@ public class GUI extends JFrame {
     private boolean sykPropHasValue;
     private String enemy;
     private Date now = new Date();
-    private String date = now.getDate()+"/"+(now.getMonth()+1)+"/"+(now.getYear()+1900);
+    private String date;
     private int[] dateList = new int[3];
+    private String[] suggestedTypes;
+    private int suggestionIndex;
 
     public GUI(Application application) {
         super("Debater Pro");
@@ -285,6 +288,8 @@ public class GUI extends JFrame {
             names1 = new String[4];
             names2 = new String[4];
             date = now.getDate()+"/"+(now.getMonth()+1)+"/"+(now.getYear()+1900);
+            suggestedTypes = application.suggestedTypes();
+            suggestionIndex = 0;
             clearPracticeText();
         });
 
@@ -343,7 +348,7 @@ public class GUI extends JFrame {
         button22.addActionListener((ActionEvent e) ->
         {
             cardLayout.show(getContentPane(), GENERAL_PANEL_NAME);
-            sykRate.setText("Competitive Syk win rate: " + String.format("%.2g%n", application.sykWinRate()));
+            sykRate.setText("Competitive SYK win rate: " + String.format("%.2g%n", application.sykWinRate()));
             propRate.setText("Practice prop win rate: " + String.format("%.2g%n", application.practiceWinningSide()));
             updateGeneralCompetitiveTable();
             updateGeneralPracticeTable();
@@ -412,7 +417,7 @@ public class GUI extends JFrame {
         propRate.setFont(BOLD);
 
         // Competitive type syk rate text
-        l101 = new JLabel("Syk win rate by motion type      ");
+        l101 = new JLabel("SYK win rate by motion type      ");
 
         // Competitive type syk rate table
         // A table for win rates for each motion type in competitive debates
@@ -421,16 +426,16 @@ public class GUI extends JFrame {
             // Determining the width of the table
             public int getColumnCount () { return 2; }
             // Determining the height of the debate based on the number of different motion types that have been debated
-            public int getRowCount () { return application.getCompetitiveMotionTypes().length; }
+            public int getRowCount () { return application.getCompetitiveMotionTypes().size(); }
             // The following method returns the value for each cell
             public Object getValueAt (int row, int column)
             {
                 if (column == 0)
                     // For each row on column 0, returning a motion type
-                    return application.getCompetitiveMotionTypes()[row];
+                    return application.getCompetitiveMotionTypes().get(row).getName();
                 else
                     // For each row on column 1, returning the corresponding win rate
-                    return String.format("%.2g%n",application.getCompetitiveMotionTypeSykRate(application.getCompetitiveMotionTypes())[row]);
+                    return String.format("%.2g%n",application.getCompetitiveMotionTypeSykRate());
             }
             // The following method returns the name for each column
             public String getColumnName (int column)
@@ -453,14 +458,14 @@ public class GUI extends JFrame {
         generalPracticeTableModel = new AbstractTableModel ()
         {
             public int getColumnCount () { return 2; } // two fields in data class
-            public int getRowCount () { return application.getPracticeMotionTypes().length; } // one row for each data item
+            public int getRowCount () { return application.getPracticeMotionTypes().size(); } // one row for each data item
             // returns the value that is shown in specific cell
             public Object getValueAt (int row, int column)
             {
                 if (column == 0)
-                    return application.getPracticeMotionTypes()[row];
+                    return application.getPracticeMotionTypes().get(row).getName();
                 else
-                    return String.format("%.2g%n",application.getPracticeMotionTypeFrequency(application.getPracticeMotionTypes())[row]);
+                    return String.format("%.2g%n",application.getPracticeMotionTypeFrequency());
             }
             public String getColumnName (int column)
             {
@@ -565,9 +570,9 @@ public class GUI extends JFrame {
 
                 // Syk side text
                 if(application.getCompetitives().get(selected).getSykProp())
-                    l11 = new JLabel("Syk is proposition.");
+                    l11 = new JLabel("SYK is proposition.");
                 else
-                    l11 = new JLabel("Syk is opposition.");
+                    l11 = new JLabel("SYK is opposition.");
 
                 // Debaters
                 tableModel11 = new AbstractTableModel ()
@@ -1098,7 +1103,7 @@ public class GUI extends JFrame {
         });
 
         // Competitive syk text
-        l403 = new JLabel("Syk side  ");
+        l403 = new JLabel("SYK side  ");
 
         // Competitive syk prop check box
         sykPropCheckBox = new JCheckBox("Proposition", false);
@@ -1310,6 +1315,13 @@ public class GUI extends JFrame {
             }
         });
 
+        // Suggestion button
+        button73 = new JButton("Suggest motion type");
+        button73.addActionListener((ActionEvent e) ->
+        {
+            suggestMotion();
+        });
+
         // Practice date text
         l513 = new JLabel("Date       ");
 
@@ -1482,14 +1494,17 @@ public class GUI extends JFrame {
                                         .addComponent(l510)
                                         .addComponent(textField28)))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(button72));
+                        .addGroup(practiceLayout.createParallelGroup(LEADING)
+                                .addComponent(button73)
+                                .addComponent(button72)));
         practiceLayout.setVerticalGroup(
                 practiceLayout.createSequentialGroup()
                         .addComponent(button71)
                         .addComponent(l500)
                         .addGroup(practiceLayout.createParallelGroup(LEADING)
                                 .addComponent(l501)
-                                .addComponent(textField3))
+                                .addComponent(textField3)
+                                .addComponent(button73))
                         .addGroup(practiceLayout.createParallelGroup(LEADING)
                                 .addComponent(l513)
                                 .addComponent(textField5))
@@ -1548,6 +1563,8 @@ public class GUI extends JFrame {
             out.writeObject(competitives);
             ArrayList<Debater> debaters = application.getDebaters();
             out.writeObject(debaters);
+            ArrayList<MotionType> motionTypes = application.getMotionTypes();
+            out.writeObject(motionTypes);
         } catch (Exception ex) {System.out.println(ex);}
     }
 
@@ -1572,6 +1589,7 @@ public class GUI extends JFrame {
     }
 
     boolean checkMotionType(String type){
+        type = type.replaceAll("\\p{Punct}","");
         for (int i = 0; i < application.getOfficialMotionTypes().length; i++) {
             if(type.equals(application.getOfficialMotionTypes()[i]))
                 return false;
@@ -1584,12 +1602,12 @@ public class GUI extends JFrame {
     }
 
     public void updateGeneralCompetitiveTable(){
-        generalCompetitiveTableModel.fireTableRowsInserted(0, application.getCompetitiveMotionTypes().length);
+        generalCompetitiveTableModel.fireTableRowsInserted(0, application.getCompetitiveMotionTypes().size());
         generalCompetitiveTableModel.fireTableDataChanged();
     }
 
     public void updateGeneralPracticeTable(){
-        generalPracticeTableModel.fireTableRowsInserted(0, application.getPracticeMotionTypes().length);
+        generalPracticeTableModel.fireTableRowsInserted(0, application.getPracticeMotionTypes().size());
         generalPracticeTableModel.fireTableDataChanged();
     }
 
@@ -1651,7 +1669,7 @@ public class GUI extends JFrame {
     }
 
     public void clearCompetitiveText(){
-        textField1.setText("This house");
+        textField1.setText("This house ");
         textField2.setText("");
         textField4.setText(date);
         sykPropCheckBox.setSelected(false);
@@ -1665,7 +1683,7 @@ public class GUI extends JFrame {
     }
 
     public void clearPracticeText(){
-        textField3.setText("This house");
+        textField3.setText("This house ");
         textField5.setText(date);
         propCheckBox2.setSelected(false);
         oppCheckBox2.setSelected(false);
@@ -1679,6 +1697,11 @@ public class GUI extends JFrame {
         textField28.setText("");
     }
 
+    public void suggestMotion(){
+        suggestionIndex = suggestionIndex % application.getOfficialMotionTypes().length;
+        textField3.setText("This house " + suggestedTypes[suggestionIndex] + " ");
+        suggestionIndex++;
+    }
     public String addNewCompetitiveDebate() {
         String[] words = motion.split(" ");
         if (words.length < 3) return "Motion too short.";
@@ -1715,8 +1738,19 @@ public class GUI extends JFrame {
             if (names1[i] == null || names2[i] == null) return "A debater name missing.";
             if (names1[i].equals("") || names2[i].equals("")) return "A debater name missing.";
         }
+
+        // Testing if the same name is on both sides
+        for (String i1 : names1) {
+            for (String i2 : names2) {
+                if (i1.equals(i2)) return "The same debater cannot be on both sides.";
+            }
+        }
+
         // Referring to the application class to save the debate to the debate list
         application.addPractice(motion, dateList, propWins, names1, names2);
+        // Changing the suggestions
+        suggestedTypes = application.suggestedTypes();
+        suggestionIndex = 0;
         // Immediately saving the debate list with the new debate
         serialize();
         // Returning a text for the pop-up window

@@ -2,7 +2,7 @@
 public class Debate implements java.io.Serializable {
     private int[] date;
     private String motion;
-    private String motionType;
+    private MotionType motionType;
     private Boolean propWins;
     private Debater[] team1 = new Debater[4];
 
@@ -25,13 +25,12 @@ public class Debate implements java.io.Serializable {
         this.motion = motion;
     }
 
-    public String getMotionType() {
+    public MotionType getMotionType() {
         return motionType;
     }
 
-    public void setMotionType(String motion) {
-        String[] words = motion.split(" ");
-        motionType = words[2];
+    public void setMotionType(MotionType motionType) {
+        this.motionType = motionType;
     }
 
     public Boolean getPropWins() {return propWins;}
