@@ -29,10 +29,6 @@ public class MotionType implements java.io.Serializable {
         else return Double.valueOf(wins)/Double.valueOf(getCompetitivePrevalence());
     }
 
-    public ArrayList<Practice> getPractices() {
-        return practices;
-    }
-
     public void addPractice(Practice practice){
         practices.add(practice);
     }
@@ -44,10 +40,6 @@ public class MotionType implements java.io.Serializable {
                 break;
             }
         }
-    }
-
-    public ArrayList<Competitive> getCompetitives() {
-        return competitives;
     }
 
     public void addCompetitive(Competitive competitive){
