@@ -67,7 +67,6 @@ public class GUI extends JFrame {
     //Debate competitive
     private JLabel l11;
     private JLabel l12;
-    private JLabel l13;
     //Debate practice
     private JLabel l21;
     private JLabel l22;
@@ -435,7 +434,7 @@ public class GUI extends JFrame {
                     return application.getCompetitiveMotionTypes().get(row).getName();
                 else
                     // For each row on column 1, returning the corresponding win rate
-                    return String.format("%.2g%n",application.getCompetitiveMotionTypeSykRate());
+                    return String.format("%.2g%n", application.getCompetitiveMotionTypeSykRate()[row]);
             }
             // The following method returns the name for each column
             public String getColumnName (int column)
@@ -465,7 +464,7 @@ public class GUI extends JFrame {
                 if (column == 0)
                     return application.getPracticeMotionTypes().get(row).getName();
                 else
-                    return String.format("%.2g%n",application.getPracticeMotionTypeFrequency());
+                    return String.format("%.2g%n", application.getPracticeMotionTypeFrequency()[row]);
             }
             public String getColumnName (int column)
             {
@@ -592,9 +591,9 @@ public class GUI extends JFrame {
 
                 // Winner text
                 if(application.getCompetitives().get(selected).getSykProp()==application.getCompetitives().get(selected).getPropWins())
-                    l12 = new JLabel("Syk wins against " + application.getCompetitives().get(selected).getEnemy() + ".");
+                    l12 = new JLabel("SYK wins against " + application.getCompetitives().get(selected).getEnemy() + ".");
                 else
-                    l12 = new JLabel("Syk loses against " + application.getCompetitives().get(selected).getEnemy() + ".");
+                    l12 = new JLabel("SYK loses against " + application.getCompetitives().get(selected).getEnemy() + ".");
 
                 // Layout
                 f1Layout = new GroupLayout (f1.getContentPane());
@@ -956,6 +955,16 @@ public class GUI extends JFrame {
                 scrollPane33 = new JScrollPane(table33);
 
                 f3Layout = new GroupLayout (f3.getContentPane());
+                // Get the screen size
+                int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+                int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+
+                // Calculate the center position of the window
+                int x = (screenWidth - f3.getWidth()) / 2;
+                int y = (screenHeight - f3.getHeight()) / 2;
+
+                // Set the location of the window
+                f3.setLocation(x, y);
                 f3.getContentPane().setLayout (f3Layout);
                 f3.getContentPane().setBackground(popUpColor);
                 f3Layout.setAutoCreateGaps (true);
@@ -1738,14 +1747,12 @@ public class GUI extends JFrame {
             if (names1[i] == null || names2[i] == null) return "A debater name missing.";
             if (names1[i].equals("") || names2[i].equals("")) return "A debater name missing.";
         }
-
         // Testing if the same name is on both sides
         for (String i1 : names1) {
             for (String i2 : names2) {
                 if (i1.equals(i2)) return "The same debater cannot be on both sides.";
             }
         }
-
         // Referring to the application class to save the debate to the debate list
         application.addPractice(motion, dateList, propWins, names1, names2);
         // Changing the suggestions

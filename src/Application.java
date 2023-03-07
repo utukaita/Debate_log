@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -12,17 +11,12 @@ public class Application {
     private ArrayList<Debater> debaters;
     private ArrayList<MotionType> motionTypes;
     private String[] officialMotionTypeNames = {"would", "supports", "believes", "regrets", "prefers", "opposes"};
-    private ArrayList<MotionType> officialMotionTypes;
 
     private String fname;
     private GUI gui;
     private Boolean exception;
 
     public Application() {
-        officialMotionTypes = new ArrayList<>();
-        for (int i = 0; i < officialMotionTypeNames.length; i++) {
-            officialMotionTypes.add(new MotionType(officialMotionTypeNames[i]));
-        }
         fname = "data.ser";
         setData();
         gui = new GUI(this);
@@ -74,7 +68,9 @@ public class Application {
             debaters = new ArrayList<>();
             motionTypes = new ArrayList<>();
             // Adding all official motion types to the list
-            motionTypes.addAll(officialMotionTypes);
+            for (int i = 0; i < officialMotionTypeNames.length; i++) {
+                motionTypes.add(new MotionType(officialMotionTypeNames[i]));
+            }
         }
     }
 
@@ -205,11 +201,12 @@ public class Application {
             if(name.equals(motionTypes.get(i).getName())) {
                 practice.setMotionType(motionTypes.get(i));
                 motionTypes.get(i).addPractice(practice);
+                return;
             }
         }
-        MotionType motionType = new MotionType(name);
-        practice.setMotionType(motionType);
-        motionType.addPractice(practice);
+            MotionType motionType = new MotionType(name);
+            practice.setMotionType(motionType);
+            motionType.addPractice(practice);
     }
 
     public void addCompetitiveMotionType(Competitive competitive){
@@ -219,6 +216,7 @@ public class Application {
             if(name.equals(motionTypes.get(i).getName())) {
                 competitive.setMotionType(motionTypes.get(i));
                 motionTypes.get(i).addCompetitive(competitive);
+                return;
             }
         }
         MotionType motionType = new MotionType(name);
@@ -242,8 +240,7 @@ public class Application {
     }
 
     public void sortDebaters(){
-        Comparator<Debater> comparator = (d1, d2) -> Double.compare(d1.winRate(), d2.winRate());
-        Collections.sort(debaters, comparator);
+        Collections.sort(debaters, Comparator.comparingDouble(Debater::winRate));
         Collections.reverse(debaters);
     }
 
@@ -289,7 +286,7 @@ public class Application {
     public double[] getPracticeMotionTypeFrequency(){
         double[] output = new double[getPracticeMotionTypes().size()];
         for (int i = 0; i < output.length; i++) {
-            output[i] = getPracticeMotionTypes().get(i).getPracticePrevalence()/practices.size();
+            output[i] = Double.valueOf(getPracticeMotionTypes().get(i).getPracticePrevalence())/Double.valueOf(practices.size());
         }
         return output;
     }
@@ -307,20 +304,27 @@ public class Application {
     }
 
     public String[] suggestedTypes() {
-        Comparator<MotionType> comparator = (d1, d2) -> Double.compare(d1.getPracticePrevalence(), d2.getPracticePrevalence());
-        Collections.sort(officialMotionTypes, comparator);
+        ArrayList<MotionType> officialMotionTypes = new ArrayList<>();
+        for (int i = 0; i < motionTypes.size(); i++) {
+            for (int j = 0; j < officialMotionTypeNames.length; j++) {
+                if(motionTypes.get(i).getName().equals(officialMotionTypeNames[j]))
+                    officialMotionTypes.add(motionTypes.get(i));
+            }
+        }
+        Collections.sort(officialMotionTypes, Comparator.comparingInt(MotionType::getPracticePrevalence));
         for (int i = 1; i < officialMotionTypes.size(); i++) {
             int backwards = 1;
             while(backwards<=i) {
-                if (officialMotionTypes.get(i).getPracticePrevalence() == officialMotionTypes.get(i - backwards).getPracticePrevalence()) {
-                    if (officialMotionTypes.get(i).getCompetitiveWinRate() <
+                if (officialMotionTypes.get(i).getPracticePrevalence() == officialMotionTypes.get(i-backwards).getPracticePrevalence()) {
+                    if (officialMotionTypes.get(i-backwards+1).getCompetitiveWinRate() <
                             officialMotionTypes.get(i-backwards).getCompetitiveWinRate()) {
-                        MotionType reserve = officialMotionTypes.get(i);
-                        officialMotionTypes.set(i, officialMotionTypes.get(i - backwards));
-                        officialMotionTypes.set(i - backwards, reserve);
+                        MotionType reserve = officialMotionTypes.get(i-backwards+1);
+                        officialMotionTypes.set(i-backwards+1, officialMotionTypes.get(i - backwards));
+                        officialMotionTypes.set(i-backwards, reserve);
                     }
                     backwards++;
-                } else backwards += officialMotionTypes.size();
+                }
+                else backwards += officialMotionTypes.size();
             }
         }
         String[] output = new String[officialMotionTypes.size()];

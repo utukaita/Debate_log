@@ -26,7 +26,7 @@ public class MotionType implements java.io.Serializable {
                 wins++;
         }
         if(getCompetitivePrevalence()==0) return -1;
-        else return wins/getCompetitivePrevalence();
+        else return Double.valueOf(wins)/Double.valueOf(getCompetitivePrevalence());
     }
 
     public ArrayList<Practice> getPractices() {
