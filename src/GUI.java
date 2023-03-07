@@ -203,6 +203,10 @@ public class GUI extends JFrame {
     // Font
     Font  BOLD  = new Font(Font.DIALOG,  Font.BOLD, 15);
 
+    // Sizing
+    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+
     // Variables
     private String motion;
     private String[] names1;
@@ -595,6 +599,12 @@ public class GUI extends JFrame {
                 else
                     l12 = new JLabel("SYK loses against " + application.getCompetitives().get(selected).getEnemy() + ".");
 
+                // Calculate the center position of the window
+                int x = (screenWidth - f1.getWidth()) / 2;
+                int y = (screenHeight - f1.getHeight()) / 2;
+                // Set the location of the window
+                f1.setLocation(x, y);
+
                 // Layout
                 f1Layout = new GroupLayout (f1.getContentPane());
                 f1.getContentPane().setLayout (f1Layout);
@@ -728,6 +738,12 @@ public class GUI extends JFrame {
                     l23 = new JLabel ("Proposition wins!");
                 else
                     l23 = new JLabel ("Opposition wins!");
+
+                // Calculate the center position of the window
+                int x = (screenWidth - f2.getWidth()) / 2;
+                int y = (screenHeight - f2.getHeight()) / 2;
+                // Set the location of the window
+                f2.setLocation(x, y);
 
                 // Layout
                 f2Layout = new GroupLayout (f2.getContentPane());
@@ -955,16 +971,14 @@ public class GUI extends JFrame {
                 scrollPane33 = new JScrollPane(table33);
 
                 f3Layout = new GroupLayout (f3.getContentPane());
-                // Get the screen size
-                int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-                int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
                 // Calculate the center position of the window
                 int x = (screenWidth - f3.getWidth()) / 2;
                 int y = (screenHeight - f3.getHeight()) / 2;
-
                 // Set the location of the window
                 f3.setLocation(x, y);
+
+                // Layout
                 f3.getContentPane().setLayout (f3Layout);
                 f3.getContentPane().setBackground(popUpColor);
                 f3Layout.setAutoCreateGaps (true);
@@ -1026,6 +1040,11 @@ public class GUI extends JFrame {
                             f = new JFrame("Alert");
                             f.add(new JLabel("Cannot delete an active debater."));
                             f.setSize(300, 200);
+                            // Calculate the center position of the window
+                            int x = (screenWidth - f.getWidth()) / 2;
+                            int y = (screenHeight - f.getHeight()) / 2;
+                            // Set the location of the window
+                            f.setLocation(x, y);
                             f.getContentPane().setBackground(popUpColor);
                             f.setLayout(new FlowLayout());
                             f.setVisible(true);
@@ -1214,8 +1233,14 @@ public class GUI extends JFrame {
                 f4 = new JFrame("Alert");
                 f4.add(new JLabel(message));
                 f4.setSize(300, 200);
+                // Calculate the center position of the window
+                int x = (screenWidth - f4.getWidth()) / 2;
+                int y = (screenHeight - f4.getHeight()) / 2;
+                // Set the location of the window
+                f4.setLocation(x, y);
                 f4.getContentPane().setBackground(popUpColor);
                 f4.setLayout(new FlowLayout());
+
                 f4.setVisible(true);
             }
         });
@@ -1447,8 +1472,14 @@ public class GUI extends JFrame {
                 f5 = new JFrame("Alert");
                 f5.add(new JLabel(message));
                 f5.setSize(300, 200);
+                // Calculate the center position of the window
+                int x = (screenWidth - f5.getWidth()) / 2;
+                int y = (screenHeight - f5.getHeight()) / 2;
+                // Set the location of the window
+                f5.setLocation(x, y);
                 f5.getContentPane().setBackground(popUpColor);
                 f5.setLayout(new FlowLayout());
+
                 f5.setVisible(true);
             }
         });
